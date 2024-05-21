@@ -10,6 +10,34 @@ function Um({ isUnderDevelopment}) {
 	};
 	return null;
 };
+
+function LoadFile({ file }) {
+	const [audioSrc, setAudioSrc] = useState(null);
+	if (file == null) {
+		return null;
+	};
+	const readerlist = new FileReader();
+	readerlist.readAsDataURL(file)
+	readerlist.onload = (event) => {
+		setAudioSrc(event.target.result);
+	};
+	return (
+		<audio src={audioSrc} controls="ture" />
+	);
+};
+
+function Mus({ file }) {
+	if (file != null) {
+		return (
+			<div>
+				<p>{file.name}</p>
+				<LoadFile file={file} />
+			</div>
+		);
+	};
+	return null;
+};
+
 function FileInput() {
 	const [sus, setSus] = useState(false);
 	const [selectedFile, setSelectedFile] = useState(null);
@@ -22,27 +50,9 @@ function FileInput() {
 				return;
 			}
 			setSelectedFile(file);
-			fLiHandle(file);
 		};
 	};
-	const fLiHandle = (f) => {
-			const readerlist = new FileReader();
-			readerlist.readAsDataURL(f)
 
-			readerlist.onload = (event) => {
-				const nfile = document.createElement('audio');
-				nfile.setAttribute('src', event.target.result);
-				nfile.controls = true;
-
-				const pr = document.createElement('div');
-				const label = document.createElement('p');
-				const lab = document.createTextNode(f.name)
-				label.appendChild(lab);
-				pr.appendChild(label)
-				pr.appendChild(nfile);
-				document.body.appendChild(pr);
-			};
-	};
 	const UrlLoad = (event) => {
 		if (event.key === 'Enter') {
 				const art = document.getElementById("Artist").value;
@@ -58,8 +68,9 @@ function FileInput() {
 			<input type="text" id="Title" placeholder="Title" onKeyPress={UrlLoad} />
 			<input type="text" id="apiKey" placeholder="Api Key" onKeyPress={UrlLoad} />
 			<Um isUnderDevelopment={sus} />
+			<Mus file={selectedFile} />
 		</div>
 	);
-}
+};
 
 export default FileInput;
