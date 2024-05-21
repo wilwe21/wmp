@@ -63,7 +63,7 @@ function FileInput() {
 	};
 	return (
 		<div>
-			<input type="file" multiple accept="audio/*" onChange={handleFileChange} />
+			<input type="file" accept="audio/*" onChange={handleFileChange} />
 			<input type="text" id="Artist" placeholder="Artist" onKeyPress={UrlLoad} />
 			<input type="text" id="Title" placeholder="Title" onKeyPress={UrlLoad} />
 			<input type="text" id="apiKey" placeholder="Api Key" onKeyPress={UrlLoad} />
