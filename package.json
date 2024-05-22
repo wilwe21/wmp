@@ -37,11 +37,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@mebtte/react-media-session": "^1.1.2",
     "electron-squirrel-startup": "^1.0.1",
-    "genius-lyrics-api": "^3.2.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-h5-audio-player": "^3.9.1",
     "sass": "^1.77.2",
     "sass-loader": "^14.2.1"
   }

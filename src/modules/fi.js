@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AudioPlayer from 'react-h5-audio-player';
 
 function Um({ isUnderDevelopment}) {
 	if (isUnderDevelopment) {
@@ -15,43 +16,19 @@ function LoadFile({ file }) {
 	if (file == null) {
 		return null;
 	};
-	const [isPlaying, setIsPlaying] = useState(false);
-	const [audioRef, setAudioRef] = useState(null);
 	const [audioSrc, setAudioSrc] = useState(null);
-	const [mediaSession] = useState(navigator.mediaSession);
 	const readerlist = new FileReader();
 	readerlist.readAsDataURL(file)
 	readerlist.onload = (event) => {
 		setAudioSrc(event.target.result);
 	};
-	useEffect(() => {
-		if (mediaSession) {
-			mediaSession.setActionHandler('play', () => setIsPlaying(true));
-			mediaSession.setActionHandler('pause', () => setIsPlaying(false));
-		}
-	}, [mediaSession]);
-	const title = file.name.split('.')[0];
-	useEffect(() => {
-		if (audioRef && mediaSession) {
-			mediaSession.metadata = {
-				title: title,
-				artist: 'Unknown'
-			};
-		}
-	}, [mediaSession]);
-	const togglePlayback = () => {
-		if (isPlaying) {
-			audioRef.pause();
-		} else {
-			audioRef.play();
-		}
-	};
 	return (
 		<div>
-			<audio ref={setAudioRef} controls="true" title={title}>
-				<source src={audioSrc} type="audio/*" />
-			</audio>
-			<button onClick={togglePlayback}>{isPlaying ? 'Pause': "Play"}</button>
+			<AudioPlayer
+				autoPlay
+				src={audioSrc}
+				onPlay={e => console.log("play")}
+			/>
 		</div>
 	);
 };
