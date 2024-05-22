@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function Um({ isUnderDevelopment}) {
 	if (isUnderDevelopment) {
@@ -12,17 +12,47 @@ function Um({ isUnderDevelopment}) {
 };
 
 function LoadFile({ file }) {
-	const [audioSrc, setAudioSrc] = useState(null);
 	if (file == null) {
 		return null;
 	};
+	const [isPlaying, setIsPlaying] = useState(false);
+	const [audioRef, setAudioRef] = useState(null);
+	const [audioSrc, setAudioSrc] = useState(null);
+	const [mediaSession] = useState(navigator.mediaSession);
 	const readerlist = new FileReader();
 	readerlist.readAsDataURL(file)
 	readerlist.onload = (event) => {
 		setAudioSrc(event.target.result);
 	};
+	useEffect(() => {
+		if (mediaSession) {
+			mediaSession.setActionHandler('play', () => setIsPlaying(true));
+			mediaSession.setActionHandler('pause', () => setIsPlaying(false));
+		}
+	}, [mediaSession]);
+	const title = file.name.split('.')[0];
+	useEffect(() => {
+		if (audioRef && mediaSession) {
+			mediaSession.metadata = {
+				title: title,
+				artist: 'Unknown'
+			};
+		}
+	}, [mediaSession]);
+	const togglePlayback = () => {
+		if (isPlaying) {
+			audioRef.pause();
+		} else {
+			audioRef.play();
+		}
+	};
 	return (
-		<audio src={audioSrc} controls="ture" />
+		<div>
+			<audio ref={setAudioRef} controls="true" title={title}>
+				<source src={audioSrc} type="audio/*" />
+			</audio>
+			<button onClick={togglePlayback}>{isPlaying ? 'Pause': "Play"}</button>
+		</div>
 	);
 };
 
@@ -30,7 +60,7 @@ function Mus({ file }) {
 	if (file != null) {
 		return (
 			<div>
-				<p>{file.name}</p>
+				<p>{file.name.split('.')[0]}</p>
 				<LoadFile file={file} />
 			</div>
 		);
