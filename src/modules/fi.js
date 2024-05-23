@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AudioPlayer from 'react-h5-audio-player';
+import LoadIcons from './loadIcons.js';
 
 function Um({ isUnderDevelopment}) {
 	if (isUnderDevelopment) {
@@ -27,7 +28,8 @@ function LoadFile({ file }) {
 			<AudioPlayer
 				autoPlay
 				src={audioSrc}
-				onPlay={e => console.log("play")}
+				preload='metadata'
+				onPlay={e => console.log(LoadIcons('play'))}
 			/>
 		</div>
 	);

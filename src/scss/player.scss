@@ -1,9 +1,3 @@
-$rhap_theme-color: $accent !default;
-$rhap_background-color: $bg !default;
-$rhap_bar-color: lighten($bg, 5) !default;
-$rhap_time-color: $fg !default;
-$rhap_font-family: inherit !default;
-
 .rhap_container {
   box-sizing: border-box;
   display: flex;
