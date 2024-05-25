@@ -3,6 +3,6 @@ body {
   color: $fg;
 }
 .App {
-  color: $accent;
+  @include text;
   text-align: Center;
 }

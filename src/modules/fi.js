@@ -23,12 +23,16 @@ function LoadFile({ file }) {
 	readerlist.onload = (event) => {
 		setAudioSrc(event.target.result);
 	};
+	const metadata = {
+		title: file.name,
+		artist: 'chuj'
+	};
 	return (
 		<div>
 			<AudioPlayer
 				autoPlay
 				src={audioSrc}
-				preload='metadata'
+				preload={metadata}
 				onPlay={e => console.log(LoadIcons('play'))}
 			/>
 		</div>

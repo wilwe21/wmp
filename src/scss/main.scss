@@ -1,4 +1,6 @@
 @import "./variables";
+@import "./common/text";
 
-@import "./App";
-@import "./player";
+@import "./widgets/App";
+@import "./widgets/player";
+@import "./widgets/video";
