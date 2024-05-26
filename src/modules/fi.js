@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import AudioPlayer from 'react-h5-audio-player';
-import LoadIcons from './loadIcons.js';
+import { SlControlPlay } from "react-icons/sl";
+import { SlControlPause } from "react-icons/sl";
+import { SlControlForward } from "react-icons/sl";
+import { SlControlRewind } from "react-icons/sl";
+import { SlControlStart } from "react-icons/sl";
+import { SlControlEnd } from "react-icons/sl";
 
 function Um({ isUnderDevelopment}) {
 	if (isUnderDevelopment) {
@@ -23,17 +28,17 @@ function LoadFile({ file }) {
 	readerlist.onload = (event) => {
 		setAudioSrc(event.target.result);
 	};
-	const metadata = {
-		title: file.name,
-		artist: 'chuj'
-	};
 	return (
 		<div>
 			<AudioPlayer
 				autoPlay
 				src={audioSrc}
-				preload={metadata}
-				onPlay={e => console.log(LoadIcons('play'))}
+				custonIcons={{
+					play: SlControlPlay,
+					pause: SlControlPause,
+					forward: SlControlForward,
+					rewind: SlControlRewind
+				}}
 			/>
 		</div>
 	);
