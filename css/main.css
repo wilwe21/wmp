@@ -1,0 +1,4 @@
+box {
+	background: @bg-color;
+	color: @fg-color;
+}

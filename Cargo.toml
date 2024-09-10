@@ -1,0 +1,8 @@
+[package]
+name = "wmp"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+gtk = { version = "0.9.1", package = "gtk4", features =["v4_6"] }
+vcpkg = "0.2.15"
