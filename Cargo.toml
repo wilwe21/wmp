@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-ffmpeg-next = "7.0.4"
 gtk = { version = "0.9.1", package = "gtk4", features =["v4_6"] }
+regex = "1.10.6"

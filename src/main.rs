@@ -1,16 +1,64 @@
 use gtk::prelude::*;
 use gtk::gdk;
 
-use ffmpeg_next::codec::{audio::Audio, Context};
-use ffmpeg_next::format::{input, Stream, probe::Probe};
-use ffmpeg_next::media::packet::Packet;
+use std::process::Command;
+use std::str;
+
+fn exline(text: &str, delimiter: &str) -> String {
+    if let Some(pos) = text.find(delimiter) {
+        let new = &text[pos..].to_string();
+        if let Some(end) = new.find("\n") {
+            new[..end].to_string()
+        } else {
+            text[pos..].to_string()
+        }
+    } else {
+        String::new()
+    }
+}
 
 fn on_active(app: &gtk::Application) {
     let mainBox = gtk::Box::new(gtk::Orientation::Vertical, 1);
-    let label = gtk::Label::builder()
-        .label("sss")
+    let output = Command::new("ffprobe")
+        .arg("/home/wilwe/Muzyka/Korzenie/Korzenie.mp3")
+        .output()
+        .expect("failed to execute");
+    let probe  = match str::from_utf8(&output.stderr){
+        Ok(v) => v,
+        Err(e) => panic!("invalid UTF-8 sequence: {}", e)
+    };
+    let find = ["artist          : ", "title           : ", "album           : ", "track           : ", "TRACKTOTAL      : ", "encoder         : ", "Duration: "];
+    let meta = [&exline(&probe, &find[0])[find[0].len()..], &exline(&probe, &find[1])[find[1].len()..], &exline(&probe, &find[2])[find[2].len()..], &exline(&probe, &find[3])[find[3].len()..], &exline(&probe, &find[4])[find[4].len()..], &exline(&probe, &find[5])[find[5].len()..], &exline(&probe, &find[6])[find[6].len()..]];
+    let ArtistLab = gtk::Label::builder()
+        .label(meta[0])
         .build();
-    mainBox.append(&label);
+    let TitleLab = gtk::Label::builder()
+        .label(meta[1])
+        .build();
+    let AlbumLab = gtk::Label::builder()
+        .label(meta[2])
+        .build();
+    let TrackLab = gtk::Label::builder()
+        .label(format!("{}/{}", meta[3], meta[4]))
+        .build();
+    let EncodecLab = gtk::Label::builder()
+        .label(meta[5])
+        .build();
+    let durLab = gtk::Label::builder()
+        .label(meta[6])
+        .build();
+    mainBox.append(&ArtistLab);
+    mainBox.append(&TitleLab);
+    mainBox.append(&AlbumLab);
+    mainBox.append(&TrackLab);
+    mainBox.append(&EncodecLab);
+    mainBox.append(&durLab);
+    ArtistLab.add_css_class("artist");
+    TitleLab.add_css_class("title");
+    AlbumLab.add_css_class("album");
+    TrackLab.add_css_class("track");
+    EncodecLab.add_css_class("encodec");
+    durLab.add_css_class("dur");
     let window = gtk::ApplicationWindow::builder()
         .title("WMP")
         .application(app)
