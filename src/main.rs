@@ -1,6 +1,10 @@
 use gtk::prelude::*;
 use gtk::gdk;
 
+use ffmpeg_next::codec::{audio::Audio, Context};
+use ffmpeg_next::format::{input, Stream, probe::Probe};
+use ffmpeg_next::media::packet::Packet;
+
 fn on_active(app: &gtk::Application) {
     let mainBox = gtk::Box::new(gtk::Orientation::Vertical, 1);
     let label = gtk::Label::builder()
