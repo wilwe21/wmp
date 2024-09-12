@@ -69,42 +69,34 @@ fn load_file(file: &str) -> gtk::Box {
 }
 
 fn on_active(app: &gtk::Application) {
-    let mainBox = gtk::Box::new(gtk::Orientation::Vertical, 1);
-    let ls = Command::new("ls")
-        .arg("/home/wilwe/Muzyka")
-        .output()
-        .expect("not a dir");
-    let dir = match str::from_utf8(&ls.stdout) {
-        Ok(v) => v,
-        Err(e) => panic!("that's a wrong number: {}", e)
-    };
-    let dialog = gtk::FileChooserDialog::new(
-        None,
-        None/* parent */,
-        gtk::FileChooserAction::Open,
-        &[("Open", gtk::ResponseType::Accept), ("Cancel", gtk::ResponseType::Cancel)],
-        );
-    dialog.show();
-    dialog.connect_response(|dialog, response_type| {
-        if response_type == gtk::ResponseType::Accept {
-            println!("Accept");
-        } else if response_type == gtk::ResponseType::DeleteEvent {
-            println!("Cancel");
-        }
-        dialog.destroy();
-    });
-    let file = "/home/wilwe/Muzyka/Korzenie/Korzenie.mp3";
-    let s = load_file(&file);
-    let lab = gtk::Label::builder()
-        .label(dir)
-        .build();
-    mainBox.append(&s);
     let window = gtk::ApplicationWindow::builder()
         .title("WMP")
         .application(app)
         .build();
     load_css();
+    let mainBox = gtk::Box::new(gtk::Orientation::Vertical, 1);
     window.set_child(Some(&mainBox));
+    let dialog = gtk::FileChooserDialog::builder()
+        .title("Pick music file")
+        .action(gtk::FileChooserAction::Open)
+        .build();
+    dialog.add_button("Open", gtk::ResponseType::Accept);
+    dialog.show();
+    dialog.connect_response(move |dialog, response_type| {
+        if response_type == gtk::ResponseType::Accept {
+            println!("Accept");
+            let files = dialog.file();
+            if let Some(file) = files {
+                let path_temp = file.path().expect("Something's wrong");
+                let path: &str = path_temp.to_str().unwrap().clone();
+                let s = load_file(&path);
+                mainBox.append(&s)
+            }
+        } else if response_type == gtk::ResponseType::DeleteEvent {
+            println!("Cancel");
+        }
+        dialog.destroy();
+    });
     window.show();
 }
 
