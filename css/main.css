@@ -2,3 +2,7 @@ box {
 	background: @bg-color;
 	color: @fg-color;
 }
+.topbar {
+	border-bottom: 2px solid grey;
+	margin-bottom: 5px;
+}
