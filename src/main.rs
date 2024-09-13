@@ -18,7 +18,7 @@ fn exline(text: &str, delimiter: &str) -> String {
 }
 
 fn load_file(file: &str) -> gtk::Box {
-    let streambox = gtk::Box::new(gtk::Orientation::Vertical, 1);
+    let streambox = gtk::Box::new(gtk::Orientation::Horizontal, 0);
     let output = Command::new("ffprobe")
         .arg(&file)
         .output()
@@ -27,6 +27,8 @@ fn load_file(file: &str) -> gtk::Box {
         Ok(v) => v,
         Err(_) => &"error i chuj"
     };
+    let Stream = gtk::Video::for_filename(Some(&file));
+    streambox.append(&Stream);
     if probe != "error i chuj" {
         let find = ["artist          : ", "title           : ", "album           : ", "track           : ", "TRACKTOTAL      : ", "encoder         : ", "Duration: "];
         let meta = [&exline(&probe, &find[0])[find[0].len()..], &exline(&probe, &find[1])[find[1].len()..], &exline(&probe, &find[2])[find[2].len()..], &exline(&probe, &find[3])[find[3].len()..], &exline(&probe, &find[4])[find[4].len()..], &exline(&probe, &find[5])[find[5].len()..], &exline(&probe, &find[6])[find[6].len()..]];
@@ -48,12 +50,10 @@ fn load_file(file: &str) -> gtk::Box {
         let durLab = gtk::Label::builder()
             .label(meta[6])
             .build();
-        streambox.append(&ArtistLab);
-        streambox.append(&TitleLab);
-        streambox.append(&AlbumLab);
-        streambox.append(&TrackLab);
-        streambox.append(&EncodecLab);
-        streambox.append(&durLab);
+        let nameBox = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        nameBox.append(&TitleLab);
+        nameBox.append(&ArtistLab);
+        streambox.append(&nameBox);
         ArtistLab.add_css_class("artist");
         TitleLab.add_css_class("title");
         AlbumLab.add_css_class("album");
@@ -61,9 +61,7 @@ fn load_file(file: &str) -> gtk::Box {
         EncodecLab.add_css_class("encodec");
         durLab.add_css_class("dur");
     }
-    let Stream = gtk::Video::for_filename(Some(&file));
 
-    streambox.append(&Stream);
     Stream.add_css_class("Stream");
     streambox
 }
@@ -84,7 +82,6 @@ fn on_active(app: &gtk::Application) {
     dialog.show();
     dialog.connect_response(move |dialog, response_type| {
         if response_type == gtk::ResponseType::Accept {
-            println!("Accept");
             let files = dialog.file();
             if let Some(file) = files {
                 let path_temp = file.path().expect("Something's wrong");

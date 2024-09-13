@@ -1,1 +1,1 @@
-beta version of media player app made with electron and react js
+beta version of media player app made with rust and gtk4

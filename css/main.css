@@ -2,7 +2,3 @@ box {
 	background: @bg-color;
 	color: @fg-color;
 }
-.Stream {
-	max-height: 100px;
-	max-width: 100px;
-}
