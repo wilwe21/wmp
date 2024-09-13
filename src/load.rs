@@ -15,22 +15,15 @@ fn exline(text: &str, delimiter: &str) -> Result<String, &'static str> {
     }
 }
 
-fn pathvalidate(text: &str) -> &str {
-    /*let ve: Vec<_> = text.split("/").collect();
-    let mut end: Vec<_> = Vec::new();
-    for sar in &ve {
-        if *sar != "" {
-            end.push(format!("/\"{}\"", sar));
-        }
-    }
-    println!("{}", end.join(""));*/
-    text
+fn get_name(path: &str) -> String {
+    let vecpath: Vec<_> = path.split("/").collect();
+    vecpath[vecpath.len()-1].to_string()
 }
 
 pub fn load_file(file: &str) -> gtk::Box {
     let streambox = gtk::Box::new(gtk::Orientation::Horizontal, 0);
     let output = Command::new("ffprobe")
-        .arg(pathvalidate(&file))
+        .arg(&file)
         .output()
         .expect("failed to execute");
     let probe  = match str::from_utf8(&output.stderr){
@@ -51,7 +44,13 @@ pub fn load_file(file: &str) -> gtk::Box {
                 nameBox.append(&TitleLab);
                 TitleLab.add_css_class("title");
             },
-            Err(_) => println!("Error: {}", &"error"),
+            Err(_) => {
+                let TitleLab = gtk::Label::builder()
+                    .label(get_name(&*file))
+                    .build();
+                nameBox.append(&TitleLab);
+                TitleLab.add_css_class("title");
+            },
         }  
         match &exline(&probe, &find[0]) {
             Ok(res) => {
