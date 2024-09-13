@@ -20,10 +20,9 @@ pub fn bar(parrent: gtk::Box) -> gtk::Box {
     parrent.append(&mBox);
     mBox.add_css_class("topbar");
     let parr = parrent.clone();
-    let dial = dialog.clone();
-    dial.connect_response(move |dial, response_type| {
+    dialog.connect_response(move |dialog, response_type| {
         if response_type == gtk::ResponseType::Accept {
-            let files = dial.file();
+            let files = dialog.file();
             if let Some(file) = files {
                 let path_temp = file.path().expect("Something's wrong");
                 let path: &str = path_temp.to_str().unwrap().clone();
@@ -33,8 +32,8 @@ pub fn bar(parrent: gtk::Box) -> gtk::Box {
         } else if response_type == gtk::ResponseType::DeleteEvent {
             println!("Cancel");
         }
-        dial.destroy();
+        dialog.hide();
     });
-    open.connect_clicked(move |_| dial.show());
+    open.connect_clicked(move |_| dialog.show());
     parrent
 }
