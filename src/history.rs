@@ -16,16 +16,13 @@ pub fn unwrap(history: RefCell<Vec<Vec<String>>>, parrent: gtk::CenterBox, scrBo
             .label(&label)
             .build();
         elm.connect_clicked(move |_| {
-                let s = load_file(&path);
-            for element in s {
-                if let Some(val) = element.downcast_ref::<String>() {
-                        his.borrow_mut().push(vec!(path.to_string(), val.to_string()));
-                        let hbox = unwrap(his.clone(), parr.clone(), scroll.clone());
-                        scroll.set_child(Some(&hbox));
-                } else if let Some(val) = element.downcast_ref::<gtk::Box>() {
-                    parr.set_end_widget(Some(val));
-                }
-            }
+            let s = load_file(&path);
+            let tit = s[1].downcast_ref::<String>();
+            his.borrow_mut().push(vec!(path.to_string(), tit.expect("reason").to_string()));
+            let hbox = unwrap(his.clone(), parr.clone(), scroll.clone());
+            scroll.set_child(Some(&hbox));
+            let BBox = s[0].downcast_ref::<gtk::Box>();
+            parr.set_end_widget(Some(BBox.expect("reason")));
         });
         mainBox.append(&elm);
     }

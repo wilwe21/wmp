@@ -13,13 +13,33 @@ pub fn bar(parrent: gtk::CenterBox) -> gtk::CenterBox {
     scroll.set_propagate_natural_height(true);
     scroll.set_child(Some(&sbox));
     parrent.set_center_widget(Some(&scroll));
-    let lab = gtk::Label::builder()
+    let main = gtk::Button::builder()
         .label("WMP")
+        .build();
+    let hitbut = gtk::Button::builder()
+        .label("History")
         .build();
     let open = gtk::Button::builder()
         .label("Open")
         .build();
-    mBox.append(&lab);
+    let scrclon = scroll.clone();
+    let scrclon2 = scroll.clone();
+    main.connect_clicked(move |_| {
+        let mainb = gtk::Box::new(gtk::Orientation::Vertical, 1);
+        let testlab = gtk::Label::builder()
+            .label("test")
+            .build();
+        mainb.append(&testlab);
+        scrclon.set_child(Some(&mainb));
+    });
+    let hiscoln = history.clone();
+    let parclon = parrent.clone();
+    hitbut.connect_clicked(move |_| {
+        let ssbox = unwrap(hiscoln.clone(), parclon.clone(), scrclon2.clone());
+        scrclon2.set_child(Some(&ssbox));
+    });
+    mBox.append(&main);
+    mBox.append(&hitbut);
     mBox.append(&open);
     let dialog = gtk::FileChooserDialog::builder()
         .title("Pick music file")
@@ -36,15 +56,12 @@ pub fn bar(parrent: gtk::CenterBox) -> gtk::CenterBox {
                 let path_temp = file.path().expect("Something's wrong");
                 let path: &str = path_temp.to_str().unwrap().clone();
                 let s = load_file(&path);
-                for element in s {
-                    if let Some(val) = element.downcast_ref::<String>() {
-                        history.borrow_mut().push(vec!(path.to_string(), val.to_string()));
-                        let hbox = unwrap(history.clone(), parr.clone(), scroll.clone());
-                        scroll.set_child(Some(&hbox));
-                    } else if let Some(val) = element.downcast_ref::<gtk::Box>() {
-                        parr.set_end_widget(Some(val));
-                    }
-                }
+                let tit = s[1].downcast_ref::<String>();
+                history.borrow_mut().push(vec![path.to_string(), tit.expect("reason").to_string()]);
+                let hbox = unwrap(history.clone(), parr.clone(), scroll.clone());
+                scroll.set_child(Some(&hbox));
+                let BBox = s[0].downcast_ref::<gtk::Box>();
+                parr.set_end_widget(Some(BBox.expect("reason")));
             }
         }
         dialog.hide();

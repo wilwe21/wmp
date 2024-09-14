@@ -61,64 +61,86 @@ pub fn load_file(file: &str) -> Vec<Box<dyn std::any::Any>> {
         }  
         match &exline(&probe, &find[0]) {
             Ok(res) => {
+                let art = (&res[find[0].len()..]).to_string();
+                vector.push(Box::new(art.clone()));
                 let ArtistLab = gtk::Label::builder()
                     .label(&res[find[0].len()..])
                     .build();
                 nameBox.append(&ArtistLab);
                 ArtistLab.add_css_class("artist");
             }
-            Err(_) => println!("Don't have metadata artist"),
+            Err(_) => {
+                vector.push(Box::new(""));
+            },
         }  
         match &exline(&probe, &find[2]) {
             Ok(res) => {
-                let ArtistLab = gtk::Label::builder()
+                let alb = (&res[find[2].len()..]).to_string();
+                vector.push(Box::new(alb.clone()));
+                let AlbumLab = gtk::Label::builder()
                     .label(&res[find[2].len()..])
                     .build();
                 //nameBox.append(&TitleLab);
-                ArtistLab.add_css_class("album");
+                AlbumLab.add_css_class("album");
             },
-            Err(_) => println!("Don't have metadata album"),
+            Err(_) => {
+                vector.push(Box::new(""));
+            },
         }  
         match &exline(&probe, &find[3]) {
             Ok(res) => {
                 match &exline(&probe, &find[4]) {
                     Ok(ress) => {
+                        let track = vec![res[find[3].len()..].parse::<i32>().unwrap(),ress[find[4].len()..].parse::<i32>().unwrap()];
+                        vector.push(Box::new(track.clone()));
                         let TrackLab = gtk::Label::builder()
-                            .label(format!("{}/{}", &res[find[3].len()..], &ress[find[4].len()..]))
+                            .label(format!("{}/{}", &track[0], &track[1]))
                             .build();
                         //nameBox.append(&TrackLab);
                         TrackLab.add_css_class("track");
                     },
                     Err(_) => {
+                        let track = vec![res[find[3].len()..].parse::<i32>().unwrap(),-1];
+                        vector.push(Box::new(track.clone()));
                         let TrackLab = gtk::Label::builder()
-                            .label(&res[find[4].len()..])
+                            .label(format!("{}", &track[0]))
                             .build();
                         //nameBox.append(&TruckLab);
                         TrackLab.add_css_class("track");
                     },
                 }  
             },
-            Err(_) => println!("Don't have metadata track"),
+            Err(_) => {
+                vector.push(Box::new(vec![-1,-1]));
+            },
         }  
         match &exline(&probe, &find[5]) {
             Ok(res) => {
+                let enco = (&res[find[5].len()..]).to_string();
+                vector.push(Box::new(enco.clone()));
                 let EncoLab = gtk::Label::builder()
                     .label(&res[find[5].len()..])
                     .build();
                 //nameBox.append(&EncoLab);
                 EncoLab.add_css_class("encoder");
             },
-            Err(_) => println!("Don't have metadata encoder"),
+            Err(_) => {
+                vector.push(Box::new(""));
+            },
         }  
         match &exline(&probe, &find[6]) {
             Ok(res) => {
+                let dur = (&res[find[6].len()..]).to_string();
+                vector.push(Box::new(dur.clone()));
                 let DurLab = gtk::Label::builder()
                     .label(&res[find[6].len()..])
                     .build();
                 //nameBox.append(&DurLab);
                 DurLab.add_css_class("duration");
             },
-            Err(_) => println!("Don't have metadata duration (what? How?)"),
+            Err(_) => {
+                vector.push(Box::new(""));
+            },
         }; 
     }
     vector
