@@ -20,8 +20,10 @@ fn get_name(path: &str) -> String {
     vecpath[vecpath.len()-1].to_string()
 }
 
-pub fn load_file(file: &str) -> gtk::Box {
+pub fn load_file(file: &str) -> Vec<Box<dyn std::any::Any>> {
+    let mut vector: Vec<Box<dyn std::any::Any>> = Vec::new();
     let streambox = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    vector.push(Box::new(streambox.clone()));
     let output = Command::new("ffprobe")
         .arg(&file)
         .output()
@@ -32,21 +34,26 @@ pub fn load_file(file: &str) -> gtk::Box {
     };
     let Stream = gtk::Video::for_filename(Some(&file));
     streambox.append(&Stream);
+    Stream.add_css_class("Stream");
     if probe != "error i chuj" {
         let find = ["artist          : ", "title           : ", "album           : ", "track           : ", "TRACKTOTAL      : ", "encoder         : ", "Duration: "];
         let nameBox = gtk::Box::new(gtk::Orientation::Vertical, 0);
         streambox.append(&nameBox);
         match &exline(&probe, &find[1]) {
             Ok(res) => {
+                let title = (&res[find[1].len()..]).to_string();
+                vector.push(Box::new(title.clone()));
                 let TitleLab = gtk::Label::builder()
-                    .label(&res[find[1].len()..])
+                    .label(&title)
                     .build();
                 nameBox.append(&TitleLab);
                 TitleLab.add_css_class("title");
             },
             Err(_) => {
+                let title = get_name(&*file);
+                vector.push(Box::new(title.clone()));
                 let TitleLab = gtk::Label::builder()
-                    .label(get_name(&*file))
+                    .label(&title)
                     .build();
                 nameBox.append(&TitleLab);
                 TitleLab.add_css_class("title");
@@ -115,7 +122,5 @@ pub fn load_file(file: &str) -> gtk::Box {
             Err(_) => println!("Error: {}", &"error"),
         }; 
     }
-
-    Stream.add_css_class("Stream");
-    streambox
+    vector
 }

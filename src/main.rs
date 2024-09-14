@@ -13,7 +13,8 @@ fn on_active(app: &gtk::Application) {
         .application(app)
         .build();
     load_css();
-    let mainBox = gtk::Box::new(gtk::Orientation::Vertical, 1);
+    let mainBox = gtk::CenterBox::new();
+    mainBox.set_orientation(gtk::Orientation::Vertical);
     let tbox = top::bar(mainBox);
     window.set_child(Some(&tbox));
     window.show();
