@@ -2,18 +2,19 @@ use gtk::prelude::*;
 use std::cell::RefCell;
 
 use crate::load::load_file;
+use crate::history::unwrap;
 
 pub fn bar(parrent: gtk::CenterBox) -> gtk::CenterBox {
     let mBox = gtk::Box::new(gtk::Orientation::Horizontal, 0);
     let scroll = gtk::ScrolledWindow::new();
-    let sbox = gtk::Box::new(gtk::Orientation::Vertical, 2);
+    let history: RefCell<Vec<Vec<String>>> = RefCell::new(Vec::new());
+    let sbox = unwrap(history.clone(), parrent.clone());
     sbox.add_css_class("scrollbox");
     scroll.set_propagate_natural_height(true);
     scroll.set_child(Some(&sbox));
     parrent.set_center_widget(Some(&scroll));
-    let history: RefCell<Vec<Vec<String>>> = RefCell::new(Vec::new());
     let lab = gtk::Label::builder()
-        .label("test")
+        .label("WMP")
         .build();
     let open = gtk::Button::builder()
         .label("Open")
@@ -35,11 +36,12 @@ pub fn bar(parrent: gtk::CenterBox) -> gtk::CenterBox {
                 let path_temp = file.path().expect("Something's wrong");
                 let path: &str = path_temp.to_str().unwrap().clone();
                 let s = load_file(&path);
-                let vec: Vec<String> = Vec::new();
                 for element in s {
                     if let Some(val) = element.downcast_ref::<String>() {
                         println!("string {}", val);
                         history.borrow_mut().push(vec!(path.to_string(), val.to_string()));
+                        let hbox = unwrap(history.clone(), parr.clone());
+                        scroll.set_child(Some(&hbox));
                         println!("{:?}", history);
                     } else if let Some(val) = element.downcast_ref::<gtk::Box>() {
                         parr.set_end_widget(Some(val));

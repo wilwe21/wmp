@@ -5,6 +5,7 @@ use std::process::Command;
 use std::str;
 
 mod load;
+mod history;
 mod top;
 
 fn on_active(app: &gtk::Application) {
