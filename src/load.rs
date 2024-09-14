@@ -66,8 +66,8 @@ pub fn load_file(file: &str) -> Vec<Box<dyn std::any::Any>> {
                     .build();
                 nameBox.append(&ArtistLab);
                 ArtistLab.add_css_class("artist");
-            },
-            Err(_) => println!("Error: {}", &"error"),
+            }
+            Err(_) => println!("Don't have metadata artist"),
         }  
         match &exline(&probe, &find[2]) {
             Ok(res) => {
@@ -77,7 +77,7 @@ pub fn load_file(file: &str) -> Vec<Box<dyn std::any::Any>> {
                 //nameBox.append(&TitleLab);
                 ArtistLab.add_css_class("album");
             },
-            Err(_) => println!("Error: {}", &"error"),
+            Err(_) => println!("Don't have metadata album"),
         }  
         match &exline(&probe, &find[3]) {
             Ok(res) => {
@@ -98,7 +98,7 @@ pub fn load_file(file: &str) -> Vec<Box<dyn std::any::Any>> {
                     },
                 }  
             },
-            Err(_) => println!("Error: {}", &"error"),
+            Err(_) => println!("Don't have metadata track"),
         }  
         match &exline(&probe, &find[5]) {
             Ok(res) => {
@@ -108,8 +108,7 @@ pub fn load_file(file: &str) -> Vec<Box<dyn std::any::Any>> {
                 //nameBox.append(&EncoLab);
                 EncoLab.add_css_class("encoder");
             },
-            Err(_) => println!("Error: {}", &"error"),
-          
+            Err(_) => println!("Don't have metadata encoder"),
         }  
         match &exline(&probe, &find[6]) {
             Ok(res) => {
@@ -119,7 +118,7 @@ pub fn load_file(file: &str) -> Vec<Box<dyn std::any::Any>> {
                 //nameBox.append(&DurLab);
                 DurLab.add_css_class("duration");
             },
-            Err(_) => println!("Error: {}", &"error"),
+            Err(_) => println!("Don't have metadata duration (what? How?)"),
         }; 
     }
     vector

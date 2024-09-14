@@ -16,11 +16,9 @@ pub fn unwrap(history: RefCell<Vec<Vec<String>>>, parrent: gtk::CenterBox, scrBo
             .label(&label)
             .build();
         elm.connect_clicked(move |_| {
-            println!("{}", &path);
-            let s = load_file(&path);
+                let s = load_file(&path);
             for element in s {
                 if let Some(val) = element.downcast_ref::<String>() {
-                        println!("string {}", val);
                         his.borrow_mut().push(vec!(path.to_string(), val.to_string()));
                         let hbox = unwrap(his.clone(), parr.clone(), scroll.clone());
                         scroll.set_child(Some(&hbox));

@@ -38,20 +38,14 @@ pub fn bar(parrent: gtk::CenterBox) -> gtk::CenterBox {
                 let s = load_file(&path);
                 for element in s {
                     if let Some(val) = element.downcast_ref::<String>() {
-                        println!("string {}", val);
                         history.borrow_mut().push(vec!(path.to_string(), val.to_string()));
                         let hbox = unwrap(history.clone(), parr.clone(), scroll.clone());
                         scroll.set_child(Some(&hbox));
-                        println!("{:?}", history);
                     } else if let Some(val) = element.downcast_ref::<gtk::Box>() {
                         parr.set_end_widget(Some(val));
-                    } else {
-                        println!("not a type");
                     }
                 }
             }
-        } else if response_type == gtk::ResponseType::DeleteEvent {
-            println!("Cancel");
         }
         dialog.hide();
     });
