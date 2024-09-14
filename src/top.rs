@@ -8,7 +8,7 @@ pub fn bar(parrent: gtk::CenterBox) -> gtk::CenterBox {
     let mBox = gtk::Box::new(gtk::Orientation::Horizontal, 0);
     let scroll = gtk::ScrolledWindow::new();
     let history: RefCell<Vec<Vec<String>>> = RefCell::new(Vec::new());
-    let sbox = unwrap(history.clone(), parrent.clone());
+    let sbox = unwrap(history.clone(), parrent.clone(), scroll.clone());
     sbox.add_css_class("scrollbox");
     scroll.set_propagate_natural_height(true);
     scroll.set_child(Some(&sbox));
@@ -40,7 +40,7 @@ pub fn bar(parrent: gtk::CenterBox) -> gtk::CenterBox {
                     if let Some(val) = element.downcast_ref::<String>() {
                         println!("string {}", val);
                         history.borrow_mut().push(vec!(path.to_string(), val.to_string()));
-                        let hbox = unwrap(history.clone(), parr.clone());
+                        let hbox = unwrap(history.clone(), parr.clone(), scroll.clone());
                         scroll.set_child(Some(&hbox));
                         println!("{:?}", history);
                     } else if let Some(val) = element.downcast_ref::<gtk::Box>() {
