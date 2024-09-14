@@ -6,6 +6,7 @@ use std::str;
 
 mod load;
 mod history;
+mod menu;
 mod top;
 
 fn on_active(app: &gtk::Application) {

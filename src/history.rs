@@ -2,6 +2,7 @@ use gtk::prelude::*;
 use std::cell::RefCell;
 
 use crate::load::load_file;
+use crate::top::savehis;
 
 pub fn unwrap(history: RefCell<Vec<Vec<String>>>, parrent: gtk::CenterBox, scrBox: gtk::ScrolledWindow) -> gtk::Box {
     let mainBox = gtk::Box::new(gtk::Orientation::Vertical, 1);
@@ -19,8 +20,7 @@ pub fn unwrap(history: RefCell<Vec<Vec<String>>>, parrent: gtk::CenterBox, scrBo
             let s = load_file(&path);
             let tit = s[1].downcast_ref::<String>();
             his.borrow_mut().push(vec!(path.to_string(), tit.expect("reason").to_string()));
-            let hbox = unwrap(his.clone(), parr.clone(), scroll.clone());
-            scroll.set_child(Some(&hbox));
+            savehis(his.clone());
             let BBox = s[0].downcast_ref::<gtk::Box>();
             parr.set_end_widget(Some(BBox.expect("reason")));
         });
