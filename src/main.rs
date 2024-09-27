@@ -8,33 +8,7 @@ mod load;
 mod history;
 mod menu;
 mod top;
-
-pub struct Music {
-    file: String,
-    title: String,
-    author: String,
-    album: String,
-    track: u8,
-    totaltrack: u8,
-    encoder: String,
-}
-pub trait Ui {
-    fn create(&self) -> gtk::Box;
-}
-impl Ui for Music {
-    fn create(&self) -> gtk::Box {
-        let main = gtk::Box::new(gtk::Orientation::Vertical, 1);
-        let title = gtk::Label::builder()
-            .label(self.title.clone())
-            .build();
-        main.append(&title);
-        let artist = gtk::Label::builder()
-            .label(self.author.clone())
-            .build();
-        main.append(&artist);
-        main
-    }
-}
+mod class;
 
 fn on_active(app: &gtk::Application) {
     let window = gtk::ApplicationWindow::builder()
