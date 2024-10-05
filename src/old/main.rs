@@ -1,26 +1,26 @@
 use gtk::prelude::*;
 use gtk::gdk;
 
-struct Window {
-    window: gtk::ApplicationWindow
-}
+use std::process::Command;
+use std::str;
 
-impl Window {
-    fn new(app: &gtk::Application) -> Self {
-        let window = gtk::ApplicationWindow::builder()
-            .title("WMP")
-            .application(app)
-            .build();
-        load_css();
-        window.show();
-        Self {
-            window
-        }
-    }
-}
+mod load;
+mod history;
+mod menu;
+mod top;
+mod class;
 
 fn on_active(app: &gtk::Application) {
-    let win = Window::new(app);
+    let window = gtk::ApplicationWindow::builder()
+        .title("WMP")
+        .application(app)
+        .build();
+    load_css();
+    let mainBox = gtk::CenterBox::new();
+    mainBox.set_orientation(gtk::Orientation::Vertical);
+    let tbox = top::bar(mainBox);
+    window.set_child(Some(&tbox));
+    window.show();
 }
 
 fn load_css() {
